@@ -477,11 +477,19 @@ $("#detailClose").addEventListener("click", closeDetail);
 
 $("#navWorks").addEventListener("click", () => {
   $("#aboutPanel").classList.remove("open");
+  $("#aboutPanel").setAttribute("aria-hidden", "true");
+  $("#contactPanel").classList.remove("open");
+  $("#contactPanel").setAttribute("aria-hidden", "true");
+  $("#navContact").classList.remove("active");
   openGallery();
 });
 
 $("#navHome").addEventListener("click", () => {
   $("#aboutPanel").classList.remove("open");
+  $("#aboutPanel").setAttribute("aria-hidden", "true");
+  $("#contactPanel").classList.remove("open");
+  $("#contactPanel").setAttribute("aria-hidden", "true");
+  $("#navContact").classList.remove("active");
   closeDetail();
 
   if (isGallery) closeGallery();
@@ -493,16 +501,33 @@ $("#brand").addEventListener("click", e => {
 });
 
 $("#navAbout").addEventListener("click", () => {
+  $("#contactPanel").classList.remove("open");
+  $("#contactPanel").setAttribute("aria-hidden", "true");
+  $("#navContact").classList.remove("active");
   $("#aboutPanel").classList.add("open");
+  $("#aboutPanel").setAttribute("aria-hidden", "false");
 });
 
 $("#aboutBack").addEventListener("click", () => {
   $("#aboutPanel").classList.remove("open");
+  $("#aboutPanel").setAttribute("aria-hidden", "true");
 });
 
 $("#navContact").addEventListener("click", () => {
-  location.href =
-    "mailto:artist@example.com?subject=Moon%20Kyeong%20Ae%20Portfolio";
+  $("#aboutPanel").classList.remove("open");
+  $("#aboutPanel").setAttribute("aria-hidden", "true");
+  $("#contactPanel").classList.add("open");
+  $("#contactPanel").setAttribute("aria-hidden", "false");
+  $("#navHome").classList.remove("active");
+  $("#navWorks").classList.remove("active");
+  $("#navContact").classList.add("active");
+});
+
+$("#contactBack").addEventListener("click", () => {
+  $("#contactPanel").classList.remove("open");
+  $("#contactPanel").setAttribute("aria-hidden", "true");
+  $("#navContact").classList.remove("active");
+  $(`#nav${isGallery ? "Works" : "Home"}`).classList.add("active");
 });
 
 /* ==========================================
@@ -513,7 +538,8 @@ $("#stage").addEventListener("wheel", e => {
     isGallery ||
     transitioning ||
     $("#detail").classList.contains("open") ||
-    $("#aboutPanel").classList.contains("open")
+    $("#aboutPanel").classList.contains("open") ||
+    $("#contactPanel").classList.contains("open")
   ) return;
 
   e.preventDefault();
@@ -542,7 +568,8 @@ $("#stage").addEventListener("touchend", e => {
   if (
     isGallery ||
     $("#detail").classList.contains("open") ||
-    $("#aboutPanel").classList.contains("open")
+    $("#aboutPanel").classList.contains("open") ||
+    $("#contactPanel").classList.contains("open")
   ) return;
 
   const diff = touchY - e.changedTouches[0].clientY;
@@ -564,6 +591,15 @@ document.addEventListener("keydown", e => {
 
     if ($("#aboutPanel").classList.contains("open")) {
       $("#aboutPanel").classList.remove("open");
+      $("#aboutPanel").setAttribute("aria-hidden", "true");
+      return;
+    }
+
+    if ($("#contactPanel").classList.contains("open")) {
+      $("#contactPanel").classList.remove("open");
+      $("#contactPanel").setAttribute("aria-hidden", "true");
+      $("#navContact").classList.remove("active");
+      $(`#nav${isGallery ? "Works" : "Home"}`).classList.add("active");
       return;
     }
 
@@ -575,7 +611,8 @@ document.addEventListener("keydown", e => {
     isGallery ||
     transitioning ||
     $("#detail").classList.contains("open") ||
-    $("#aboutPanel").classList.contains("open")
+    $("#aboutPanel").classList.contains("open") ||
+    $("#contactPanel").classList.contains("open")
   ) return;
 
   if (["ArrowDown", "ArrowRight"].includes(e.key)) {
