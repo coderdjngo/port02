@@ -1,0 +1,126 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOON KYEONG AE — Artist Gallery</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+
+</head>
+
+<body>
+<div class="shell">
+  <main class="stage" id="stage">
+
+    <!-- HEADER -->
+    <header class="site-header">
+      <a class="brand" href="#home" id="brand">
+        MOON KYEONG AE
+        <span class="brand-symbol" aria-hidden="true"></span>
+      </a>
+
+      <nav class="nav" aria-label="주 메뉴">
+        <button id="navHome" class="active">Home</button>
+        <button id="navWorks">Works</button>
+        <button id="navAbout">About</button>
+        <button id="navContact">Contact</button>
+      </nav>
+    </header>
+
+    <!-- MAIN FILM VIEW -->
+    <section class="main-view" id="mainView"
+             aria-label="작품 슬라이드">
+      <div class="guide"></div>
+      <div class="wave" id="wave" aria-hidden="true"></div>
+      <div class="reticle" aria-hidden="true"></div>
+      <div class="film" id="film"></div>
+      <span class="counter" id="sideCounter">09 / 12</span>
+      <span class="scroll-hint">SCROLL TO EXPLORE</span>
+    </section>
+
+    <!-- ALL WORKS -->
+    <section class="gallery-view" id="galleryView"
+             aria-label="전체 작품 갤러리" aria-hidden="true">
+      <div class="gallery-head">
+        <div>
+          <p class="gallery-eyebrow">COASTAL WORKS / 2026</p>
+          <h1>Sea Studies<span style="color:#bbb">.</span></h1>
+        </div>
+        <div class="gallery-actions">
+          <span class="gallery-count" id="galleryCount"></span>
+          <button class="gallery-close" id="galleryClose">
+            닫기 <span aria-hidden="true">↗</span>
+          </button>
+        </div>
+      </div>
+      <div class="gallery-grid" id="galleryGrid"></div>
+    </section>
+
+    <!-- MAIN BOTTOM -->
+    <footer class="stage-bottom" id="mainFooter">
+      <button class="open-gallery" id="openGallery">
+        갤러리 모아보기
+        <span aria-hidden="true">↗</span>
+      </button>
+
+      <div class="caption-center">
+        <span id="workName">Sea of Light</span>
+        <span id="workType">Landscape</span>
+      </div>
+
+      <div class="caption-right">
+        <span id="workPlace">Busan · Korea</span>
+        <span id="workYear">2026</span>
+      </div>
+    </footer>
+
+    <!-- DETAIL MODAL -->
+    <section class="detail" id="detail"
+             aria-label="작품 상세보기"
+             role="dialog" aria-modal="true">
+      <button class="detail-close" id="detailClose">닫기 ✕</button>
+
+      <div class="detail-inner">
+        <img id="detailImage" alt="">
+        <div class="detail-copy">
+          <small class="detail-number" id="detailNumber"></small>
+          <h2 id="detailTitle"></h2>
+          <p class="detail-subtitle" id="detailSubtitle"></p>
+          <p class="detail-desc" id="detailDesc"></p>
+          <dl class="detail-facts">
+            <div><dt>장소 · 연도</dt><dd id="detailPlaceYear"></dd></div>
+            <div><dt>작품 크기</dt><dd id="detailDimensions"></dd></div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="about-panel" id="aboutPanel">
+      <article>
+        <small>ABOUT THE ARTIST · THE SEA</small>
+        <h2>Moon Kyeong Ae.</h2>
+        <p>
+          바다와 해안, 파도가 만들어내는 빛과 움직임을 기록하는
+          아티스트의 온라인 전시 공간입니다.
+          작품 사이를 스크롤하며 감상하거나
+          전체 갤러리에서 서로 다른 바다의 순간을 만나보세요.
+        </p>
+        <button id="aboutBack">← Back to gallery</button>
+      </article>
+    </section>
+
+  </main>
+</div>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="script.js" defer></script>
+
+</body>
+</html>
