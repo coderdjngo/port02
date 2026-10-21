@@ -48,8 +48,8 @@
              aria-label="전체 작품 갤러리" aria-hidden="true">
       <div class="gallery-head">
         <div>
-          <p class="gallery-eyebrow">COASTAL WORKS / 2026</p>
-          <h1>Sea Studies<span style="color:#bbb">.</span></h1>
+          <p class="gallery-eyebrow">SELECTED WORKS</p>
+          <h1>Moon's Works<span style="color:#bbb">.</span></h1>
         </div>
         <div class="gallery-actions">
           <span class="gallery-count" id="galleryCount"></span>
@@ -101,18 +101,101 @@
     </section>
 
     <!-- ABOUT -->
-    <section class="about-panel" id="aboutPanel">
-      <article>
-        <small>ABOUT THE ARTIST · THE SEA</small>
-        <h2>Moon Kyeong Ae.</h2>
-        <p>
-          바다와 해안, 파도가 만들어내는 빛과 움직임을 기록하는
-          아티스트의 온라인 전시 공간입니다.
-          작품 사이를 스크롤하며 감상하거나
-          전체 갤러리에서 서로 다른 바다의 순간을 만나보세요.
-        </p>
+    <section class="about-panel" id="aboutPanel"
+             aria-label="작가 소개와 전시 이력" aria-hidden="true">
+      <div class="about-layout">
+        <article class="about-intro">
+          <small>ABOUT THE ARTIST</small>
+          <h2>Moon Kyeong Ae.</h2>
+          <div class="artist-statement">
+            <p>형상을 구체적으로 담기보다는, 화면 위에 남겨지는 색과 질감, 붓질이 감정의 언어가 되길 바란다.</p>
+            <p>고요하지만 단단하게, 침묵 속에서 더 많은 이야기를 품고 있는 그런 회화를 꿈꾼다.</p>
+            <p>나의 작업에 많이 사용하는 ‘푸른’과 ‘검은’.</p>
+            <p>‘푸른’은 멀리 있는 어떤 감정의 바다 이기도 하고, 차분히 가라앉은 내면의 풍경이기도 하다.</p>
+            <p>그리고 ‘검은’은 이름 붙일 수 없는 감정의 덩어리, 혹은 무게를 가진 기억의 흔적이다.</p>
+            <p>나는 이 작업들을 통해 어떤 ‘말로 전해지지 않은 감정’과 마주하고, 그것들을 조용히 떠올리고, 바라보는 시간을 만들려고 한다.</p>
+            <p>보는 이들 역시 각자의 방식으로 이 공간에 머물길 바라며...</p>
+          </div>
+
+          <dl class="artist-profile">
+            <div>
+              <dt>활동</dt>
+              <dd>대전미술협회 회원 · 미술단체 두루 회원 · 이코노텍스트 회원</dd>
+            </div>
+            <div>
+              <dt>학력</dt>
+              <dd>전 한국전자통신연구원 방송미디어연구소 · 충남대학교 대학원 졸업</dd>
+            </div>
+          </dl>
+        </article>
+
+        <section class="exhibitions" aria-labelledby="exhibitionsTitle">
+          <div class="exhibitions-heading">
+            <div>
+              <small>SELECTED CV</small>
+              <h3 id="exhibitionsTitle">Selected exhibitions<span>.</span></h3>
+            </div>
+            <p>개인전 1회 · 단체전 21회</p>
+          </div>
+
+          <div class="exhibition-section">
+            <h4>개인전</h4>
+            <ul class="exhibition-list">
+              <li>
+                <time datetime="2023">2023</time>
+                <div><strong>검은푸른_어디쯤</strong><span>갤러리고트빈 · 대전</span></div>
+              </li>
+            </ul>
+          </div>
+
+          <div class="exhibition-section">
+            <h4>단체전</h4>
+            <ul class="exhibition-list">
+              <li><time datetime="2025">2025</time><div><strong>향(香)과 형(形) 두루회원전</strong><span>커피1011 · 대전</span></div></li>
+              <li><time datetime="2025">2025</time><div><strong>열개의 문 전</strong><span>특허연수원 · 대전</span></div></li>
+              <li><time datetime="2025">2025</time><div><strong>대전미술제</strong><span>대전예술가의집 · 대전</span></div></li>
+              <li><time datetime="2025">2025</time><div><strong>아트포아트 300인전시</strong><span>아트포아트 · 대전</span></div></li>
+              <li><time datetime="2025">2025</time><div><strong>새롭게걷다전</strong><span>M갤러리 · 대전</span></div></li>
+              <li><time datetime="2024">2024</time><div><strong>오늘은맛있는그림전</strong><span>카페1011 · 대전</span></div></li>
+              <li><time datetime="2024">2024</time><div><strong>새롭게걷다전</strong><span>M갤러리 · 대전</span></div></li>
+              <li><time datetime="2024">2024</time><div><strong>두루미전시</strong><span>3월 · 갑동 헤비츠갤러리</span></div></li>
+              <li><time datetime="2024">2024</time><div><strong>대전미술제</strong><span>3월 · 예술가의집</span></div></li>
+              <li><time datetime="2024">2024</time><div><strong>담소화락</strong><span>6월 · 윤갤러리</span></div></li>
+              <li><time datetime="2024">2024</time><div><strong>이코노텍스트전</strong><span>8월 · 이공갤러리</span></div></li>
+              <li><time datetime="2023">2023</time><div><strong>이코노텍스트전</strong><span>갤러리고트빈 · 대전</span></div></li>
+              <li><time datetime="2023">2023</time><div><strong>커피1011 특별전</strong><span>카페1011</span></div></li>
+              <li><time datetime="2023">2023</time><div><strong>개별적 형상전</strong><span>ZEN갤러리 · 대전</span></div></li>
+              <li><time datetime="2023-01">2023</time><div><strong>대전예술지 vol.332 지상갤러리</strong><span>2023년 1월호</span></div></li>
+              <li><time datetime="2022">2022</time><div><strong>이코노텍스트전</strong><span>갤러리고트빈 · 대전</span></div></li>
+              <li><time datetime="2021">2021</time><div><strong>예치과갤러리 초대전</strong><span>예치과 · 대전</span></div></li>
+              <li><span class="exhibition-year">—</span><div><strong>시뮬라시옹전</strong><span>꼬시꼬시 · 대전</span></div></li>
+              <li><time datetime="2019">2019</time><div><strong>바라보다전</strong><span>M갤러리 · 대전</span></div></li>
+              <li><time datetime="2019">2019</time><div><strong>자늑자늑전</strong><span>M갤러리 · 대전</span></div></li>
+            </ul>
+          </div>
+
+          <div class="exhibition-section">
+            <h4>기타 전시</h4>
+            <ul class="exhibition-list">
+              <li><time datetime="2019">2019</time><div><strong>바른나무 木가구전</strong><span>갤러리고트빈 · 대전</span></div></li>
+              <li><time datetime="2017">2017</time><div><strong>한국목공교육협회 목공작품전</strong><span>타임월드 · 대전</span></div></li>
+            </ul>
+          </div>
+
+          <div class="exhibition-award">
+            <h4>수상</h4>
+            <p>대전광역시미술대전 · 금강미술대전 · 여성미술대전 입선 및 특선</p>
+          </div>
+
+          <a class="artist-source"
+             href="https://heremoon7.wixsite.com/moon"
+             target="_blank" rel="noopener noreferrer">
+            작가 공식 사이트에서 더 보기 <span aria-hidden="true">↗</span>
+          </a>
+        </section>
+
         <button id="aboutBack">← Back to gallery</button>
-      </article>
+      </div>
     </section>
 
     <!-- CONTACT -->
@@ -130,7 +213,6 @@
           <a href="https://www.instagram.com/gomtiiing/"
              target="_blank" rel="noopener noreferrer">@gomtiiing ↗</a>
         </div>
-        <p class="contact-note">이메일은 예시 주소입니다.</p>
         <button id="contactBack">← Back to exhibition</button>
       </article>
     </section>

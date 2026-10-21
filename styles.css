@@ -578,9 +578,10 @@ img { display: block; }
   inset: 0;
   z-index: 25;
   display: none;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
-  padding: 80px 12%;
+  overflow-y: auto;
+  padding: clamp(92px, 12vh, 130px) clamp(22px, 8vw, 120px) 40px;
   background: #fff;
 }
 
@@ -597,19 +598,152 @@ img { display: block; }
 
 .about-panel.open { display: flex; }
 .contact-panel.open { display: flex; }
-.about-panel article { max-width: 600px; }
+.about-layout {
+  display: grid;
+  grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+  align-content: start;
+  gap: clamp(42px, 7vw, 100px);
+  width: 100%;
+  max-width: 1200px;
+  margin: auto;
+}
+.about-intro { max-width: none; }
+.about-intro > small {
+  color: #777;
+  font-size: .75rem;
+  letter-spacing: .12em;
+}
 .contact-panel article { width: 100%; max-width: 760px; }
 
-.about-panel h2 {
+.about-intro h2 {
+  margin: 16px 0 28px;
   font-size: 4.5rem;
   font-weight: 500;
   letter-spacing: -.07em;
 }
 
-.about-panel p {
+.about-intro .artist-statement p {
+  margin: 0 0 1.05rem;
   font-size: 1.0625rem;
   line-height: 1.9;
   color: #666;
+}
+
+.artist-profile {
+  margin: 2rem 0 0;
+  border-top: 1px solid #ddd;
+}
+
+.artist-profile div {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.artist-profile dt,
+.artist-profile dd {
+  margin: 0;
+  font-size: .8125rem;
+  line-height: 1.7;
+}
+
+.artist-profile dt { color: #888; }
+
+.exhibitions-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #171717;
+}
+
+.exhibitions-heading small {
+  color: #777;
+  font-size: .75rem;
+  letter-spacing: .12em;
+}
+
+.exhibitions-heading h3 {
+  margin: 10px 0 0;
+  font-size: 2rem;
+  font-weight: 500;
+  letter-spacing: -.06em;
+}
+
+.exhibitions-heading h3 span { color: #aaa; }
+
+.exhibitions-heading p {
+  margin: 0;
+  color: #777;
+  font-size: .8125rem;
+}
+
+.exhibition-section { margin-top: 1.8rem; }
+
+.exhibition-section h4,
+.exhibition-award h4 {
+  margin: 0 0 12px;
+  font-size: .875rem;
+  font-weight: 600;
+}
+
+.exhibition-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.exhibition-list li {
+  display: grid;
+  grid-template-columns: 3.5rem 1fr;
+  gap: 12px;
+  padding: 12px 0;
+  border-top: 1px solid #e5e5e5;
+}
+
+.exhibition-list time,
+.exhibition-year {
+  color: #888;
+  font-size: .8125rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.exhibition-list strong,
+.exhibition-list li div span {
+  display: block;
+  font-size: .8125rem;
+  line-height: 1.65;
+}
+
+.exhibition-list strong { font-weight: 500; }
+.exhibition-list li div span { color: #888; }
+
+.exhibition-award {
+  margin-top: 2rem;
+  padding: 18px 0;
+  border-top: 1px solid #171717;
+  border-bottom: 1px solid #ddd;
+}
+
+.exhibition-award p {
+  margin: 0;
+  color: #666;
+  font-size: .8125rem;
+  line-height: 1.7;
+}
+
+.artist-source {
+  display: inline-flex;
+  gap: 10px;
+  margin-top: 20px;
+  color: #333;
+  font-size: .8125rem;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
 }
 
 .contact-social {
@@ -663,8 +797,10 @@ img { display: block; }
   font-size: .8125rem !important;
 }
 
-.about-panel button {
-  margin-top: 26px;
+.about-layout > button {
+  grid-column: 1 / -1;
+  justify-self: start;
+  margin-top: 8px;
   padding: 8px 0;
   border-bottom: 1px solid;
 }
@@ -704,9 +840,8 @@ img { display: block; }
     font-size: .875rem;
   }
 
-  .nav { gap: 10px; }
+  .nav { gap: clamp(5px, 2vw, 8px); }
   .nav button { font-size: .8125rem; }
-  .nav button:nth-child(3) { display: none; }
 
   .guide { opacity: .28; }
   .wave { width: 26%; }
@@ -769,6 +904,13 @@ img { display: block; }
   .contact-panel h2 { font-size: 2.75rem; }
   .contact-email { font-size: 1.125rem; }
   .contact-social { justify-content: space-between; gap: 12px; }
+
+  .about-panel { padding: 92px 20px 28px; }
+  .about-layout { grid-template-columns: minmax(0, 1fr); gap: 38px; }
+  .about-intro h2 { font-size: 3rem; }
+  .about-intro .artist-statement p { font-size: .9375rem; }
+  .exhibitions-heading h3 { font-size: 1.75rem; }
+  .about-layout > button { grid-column: 1; }
 
   .detail {
     overflow-y: auto;
