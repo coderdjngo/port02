@@ -405,7 +405,7 @@ img { display: block; }
 
 .gallery-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: clamp(15px, 2.6vw, 38px) clamp(10px, 1.8vw, 28px);
   padding: 10px 0 50px;
 }
@@ -602,7 +602,7 @@ img { display: block; }
   html { font-size: 16px; }
 
   .gallery-grid {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .caption-right,
@@ -667,8 +667,8 @@ img { display: block; }
   .gallery-view { padding: 91px 17px 25px; }
 
   .gallery-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px 11px;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
   }
 
   .gallery-head {

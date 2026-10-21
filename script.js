@@ -215,24 +215,24 @@ function select(next, instant = false) {
   const mobile = innerWidth <= 580;
 
   const bigW = clamp(
-    innerWidth * (mobile ? .47 : .205),
-    mobile ? 145 : 185,
-    mobile ? 225 : 300
+    innerWidth * (mobile ? .63 : .27),
+    mobile ? 175 : 220,
+    mobile ? 260 : 380
   );
 
   const bigH = clamp(
-    innerHeight * (mobile ? .25 : .235),
-    mobile ? 125 : 145,
-    mobile ? 195 : 240
+    innerHeight * (mobile ? .27 : .28),
+    mobile ? 150 : 170,
+    mobile ? 210 : 290
   );
 
   const smallW = mobile
-    ? 76
-    : clamp(innerWidth * .092, 80, 118);
+    ? 92
+    : clamp(innerWidth * .105, 90, 132);
 
   const smallH = mobile
-    ? 78
-    : clamp(innerHeight * .155, 84, 119);
+    ? 94
+    : clamp(innerHeight * .17, 94, 132);
 
   slots.forEach((element, i) => {
     let distanceIndex = i - index;
