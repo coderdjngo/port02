@@ -585,6 +585,31 @@ window.addEventListener("resize", () => {
 });
 
 /* ==========================================
-   14. INITIALIZE
+   14. HEADER ON SCROLL
+   About / 갤러리를 내리면 헤더에 흰 배경 + 그림자
+========================================== */
+const siteHeader = $(".site-header");
+
+function updateHeader() {
+  let top = 0;
+
+  if ($("#aboutPanel").classList.contains("open")) {
+    top = $("#aboutPanel").scrollTop;
+  } else if (isGallery) {
+    top = $("#galleryView").scrollTop;
+  }
+
+  siteHeader.classList.toggle("scrolled", top > 8);
+}
+
+$("#aboutPanel").addEventListener("scroll", updateHeader, { passive: true });
+$("#galleryView").addEventListener("scroll", updateHeader, { passive: true });
+
+// 패널 열고 닫을 때(클릭·ESC) 상태 다시 확인
+document.addEventListener("click", () => requestAnimationFrame(updateHeader));
+document.addEventListener("keydown", () => requestAnimationFrame(updateHeader));
+
+/* ==========================================
+   15. INITIALIZE
 ========================================== */
 select(index, true);

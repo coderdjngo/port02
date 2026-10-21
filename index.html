@@ -8,7 +8,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Homemade+Apple&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 
 </head>
@@ -104,40 +104,74 @@
     <section class="about-panel" id="aboutPanel"
              aria-label="작가 소개와 전시 이력" aria-hidden="true">
       <div class="about-layout">
-        <article class="about-intro">
-          <small>ABOUT THE ARTIST</small>
-          <h2>Moon<br>Kyeong Ae.</h2>
+
+        <!-- 01. HERO : name + portrait -->
+        <header class="about-hero">
+          <div class="about-hero-copy">
+            <p class="about-eyebrow"><span>01</span>ABOUT THE ARTIST</p>
+            <h2>Moon<br>Kyeong Ae<span>.</span></h2>
+            <p class="about-name-ko">문경애</p>
+            <blockquote class="about-quote">
+              고요하지만 단단하게, 침묵 속에서 더 많은 이야기를 품고 있는 그런 회화를 꿈꾼다.
+            </blockquote>
+          </div>
+
+          <figure class="about-portrait">
+            <div class="about-portrait-frame">
+              <img src="img/artist.jpg"
+                   alt="어두운 전시장의 영상 작품 앞에 서 있는 작가 문경애"
+                   loading="lazy">
+            </div>
+            <figcaption>
+              <span>ARTIST PORTRAIT</span>
+              <span>Moon Kyeong Ae</span>
+            </figcaption>
+          </figure>
+        </header>
+
+        <!-- 02. STATEMENT -->
+        <section class="about-block" aria-labelledby="statementTitle">
+          <p class="about-eyebrow" id="statementTitle"><span>02</span>작가의 말</p>
           <div class="artist-statement">
             <p>형상을 구체적으로 담기보다는, 화면 위에 남겨지는 색과 질감, 붓질이 감정의 언어가 되길 바란다.</p>
             <p>고요하지만 단단하게, 침묵 속에서 더 많은 이야기를 품고 있는 그런 회화를 꿈꾼다.</p>
-            <p>나의 작업에 많이 사용하는 ‘푸른’과 ‘검은’.</p>
-            <p>‘푸른’은 멀리 있는 어떤 감정의 바다 이기도 하고, 차분히 가라앉은 내면의 풍경이기도 하다.</p>
-            <p>그리고 ‘검은’은 이름 붙일 수 없는 감정의 덩어리, 혹은 무게를 가진 기억의 흔적이다.</p>
+            <p class="statement-key">나의 작업에 많이 사용하는 <em class="tone-blue">‘푸른’</em>과 <em class="tone-black">‘검은’</em>.</p>
+            <p><em class="tone-blue">‘푸른’</em>은 멀리 있는 어떤 감정의 바다 이기도 하고, 차분히 가라앉은 내면의 풍경이기도 하다.</p>
+            <p>그리고 <em class="tone-black">‘검은’</em>은 이름 붙일 수 없는 감정의 덩어리, 혹은 무게를 가진 기억의 흔적이다.</p>
             <p>나는 이 작업들을 통해 어떤 ‘말로 전해지지 않은 감정’과 마주하고, 그것들을 조용히 떠올리고, 바라보는 시간을 만들려고 한다.</p>
             <p>보는 이들 역시 각자의 방식으로 이 공간에 머물길 바라며...</p>
           </div>
+        </section>
 
+        <!-- Below the statement the page sinks into the work palette -->
+        <div class="about-deep">
+
+        <!-- 03. PROFILE -->
+        <section class="about-block" aria-labelledby="profileTitle">
+          <p class="about-eyebrow" id="profileTitle"><span>03</span>PROFILE</p>
           <dl class="artist-profile">
             <div>
               <dt>활동</dt>
-              <dd>대전미술협회 회원 · 미술단체 두루 회원 · 이코노텍스트 회원</dd>
+              <dd>대전미술협회 회원<br>미술단체 두루 회원<br>이코노텍스트 회원</dd>
             </div>
             <div>
               <dt>경력</dt>
-              <dd>전 한국전자통신연구원 방송미디어연구소</dd>
+              <dd>前 한국전자통신연구원(ETRI)<br>방송미디어연구소</dd>
             </div>
             <div>
               <dt>학력</dt>
               <dd>충남대학교 대학원 졸업</dd>
             </div>
           </dl>
-        </article>
+        </section>
 
-        <section class="exhibitions" aria-labelledby="exhibitionsTitle">
+        <!-- 04. EXHIBITIONS -->
+        <section class="about-block exhibitions" aria-labelledby="exhibitionsTitle">
+          <p class="about-eyebrow"><span>04</span>EXHIBITIONS</p>
+
+          <div class="exhibitions-body">
           <div class="exhibitions-heading">
-            <div>
-              <h3 id="exhibitionsTitle">전시 이력<span>.</span></h3>
-            </div>
+            <h3 id="exhibitionsTitle">전시 이력<span>.</span></h3>
             <p>개인전 1회 · 단체전 21회</p>
           </div>
 
@@ -189,9 +223,11 @@
             <h4>수상</h4>
             <p>대전광역시미술대전 · 금강미술대전 · 여성미술대전 입선 및 특선</p>
           </div>
+          </div>
         </section>
 
         <button id="aboutBack">← Back to gallery</button>
+        </div>
       </div>
     </section>
 
