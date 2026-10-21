@@ -5,6 +5,15 @@ html {
   font-size: 18px;
 }
 
+/* Maru Buri by Naver, served via Noonnu font #487. */
+@font-face {
+  font-family: "MaruBuri";
+  src: url("https://hangeul.pstatic.net/hangeul_static/webfont/MaruBuri/MaruBuri-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
 :root {
   --ink: #1b1b1b;
   --muted: #747474;
@@ -310,6 +319,7 @@ img { display: block; }
   min-width: 185px;
   padding: 3px 0;
   text-align: left;
+  font-family: "MaruBuri", "Noto Sans KR", serif;
   font-size: 1rem;
 }
 
@@ -602,7 +612,6 @@ img { display: block; }
   color: #666;
 }
 
-.contact-panel small,
 .contact-social {
   color: #777;
   font-size: .875rem;
@@ -636,11 +645,19 @@ img { display: block; }
 
 .contact-social {
   display: flex;
+  align-items: center;
   gap: 28px;
   padding: 16px 0;
   border-top: 1px solid #ddd;
   border-bottom: 1px solid #ddd;
 }
+
+.contact-social a {
+  color: #171717;
+  text-decoration: none;
+}
+
+.contact-social a:hover { text-decoration: underline; }
 
 .contact-note {
   font-size: .8125rem !important;
