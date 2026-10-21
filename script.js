@@ -21,7 +21,6 @@ const workDescriptions = [
 
 const works = Array.from({ length: 14 }, (_, i) => {
   const number = String(i + 1).padStart(2, "0");
-  const imageNumber = i < 4 ? i + 1 : i + 2;
   const featuredWork = i === 0;
 
   return {
@@ -29,7 +28,7 @@ const works = Array.from({ length: 14 }, (_, i) => {
     subtitle: featuredWork ? "Acrylic on canvas" : "",
     place: "Moon's Works",
     year: featuredWork ? "2025" : "",
-    image: `img/sea-${String(imageNumber).padStart(2, "0")}.png`,
+    image: `img/sea-${number}.png`,
     dimensions: featuredWork ? "31.8 × 40.9 cm (6F)" : "정보 미기재",
     desc: workDescriptions[i]
   };
