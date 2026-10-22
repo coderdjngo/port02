@@ -50,6 +50,12 @@ const homeCanvas = $("#homeCanvas");
 let isGallery = false;
 let transitioning = false;
 
+function setActiveNav(activeId) {
+  ["navHome", "navWorks", "navAbout", "navContact"].forEach(id => {
+    $(`#${id}`).classList.toggle("active", id === activeId);
+  });
+}
+
 /* ==========================================
    03. CREATE GALLERY ITEMS
 ========================================== */
@@ -164,8 +170,7 @@ function openGallery() {
     transitioning = false;
   }
 
-  $("#navHome").classList.remove("active");
-  $("#navWorks").classList.add("active");
+  setActiveNav("navWorks");
 }
 
 /* ==========================================
@@ -206,8 +211,7 @@ function closeGallery() {
     finish();
   }
 
-  $("#navWorks").classList.remove("active");
-  $("#navHome").classList.add("active");
+  setActiveNav("navHome");
 }
 
 /* ==========================================
@@ -251,7 +255,7 @@ $("#navWorks").addEventListener("click", () => {
   $("#aboutPanel").setAttribute("aria-hidden", "true");
   $("#contactPanel").classList.remove("open");
   $("#contactPanel").setAttribute("aria-hidden", "true");
-  $("#navContact").classList.remove("active");
+  setActiveNav("navWorks");
   openGallery();
 });
 
@@ -261,29 +265,34 @@ $("#navHome").addEventListener("click", () => {
   $("#aboutPanel").setAttribute("aria-hidden", "true");
   $("#contactPanel").classList.remove("open");
   $("#contactPanel").setAttribute("aria-hidden", "true");
-  $("#navContact").classList.remove("active");
+  setActiveNav(isGallery ? "navWorks" : "navHome");
   closeDetail();
 
   if (isGallery) closeGallery();
 });
 
-$("#brand").addEventListener("click", e => {
-  e.preventDefault();
-  $("#navHome").click();
-});
+const brand = $("#brand");
+if (brand) {
+  brand.addEventListener("click", event => {
+    event.preventDefault();
+    $("#navHome").click();
+  });
+}
 
 $("#navAbout").addEventListener("click", () => {
   stage.classList.remove("home-mode");
+  $("#aboutPanel").scrollTop = 0;
+  $("#aboutPanel").setAttribute("aria-hidden", "false");
   $("#contactPanel").classList.remove("open");
   $("#contactPanel").setAttribute("aria-hidden", "true");
-  $("#navContact").classList.remove("active");
   $("#aboutPanel").classList.add("open");
-  $("#aboutPanel").setAttribute("aria-hidden", "false");
+  setActiveNav("navAbout");
 });
 
 $("#aboutBack").addEventListener("click", () => {
   $("#aboutPanel").classList.remove("open");
   $("#aboutPanel").setAttribute("aria-hidden", "true");
+  setActiveNav(isGallery ? "navWorks" : "navHome");
   if (!isGallery) stage.classList.add("home-mode");
 });
 
@@ -293,16 +302,13 @@ $("#navContact").addEventListener("click", () => {
   $("#aboutPanel").setAttribute("aria-hidden", "true");
   $("#contactPanel").classList.add("open");
   $("#contactPanel").setAttribute("aria-hidden", "false");
-  $("#navHome").classList.remove("active");
-  $("#navWorks").classList.remove("active");
-  $("#navContact").classList.add("active");
+  setActiveNav("navContact");
 });
 
 $("#contactBack").addEventListener("click", () => {
   $("#contactPanel").classList.remove("open");
   $("#contactPanel").setAttribute("aria-hidden", "true");
-  $("#navContact").classList.remove("active");
-  $(`#nav${isGallery ? "Works" : "Home"}`).classList.add("active");
+  setActiveNav(isGallery ? "navWorks" : "navHome");
   if (!isGallery) stage.classList.add("home-mode");
 });
 
@@ -319,6 +325,7 @@ document.addEventListener("keydown", e => {
     if ($("#aboutPanel").classList.contains("open")) {
       $("#aboutPanel").classList.remove("open");
       $("#aboutPanel").setAttribute("aria-hidden", "true");
+      setActiveNav(isGallery ? "navWorks" : "navHome");
       if (!isGallery) stage.classList.add("home-mode");
       return;
     }
@@ -326,8 +333,7 @@ document.addEventListener("keydown", e => {
     if ($("#contactPanel").classList.contains("open")) {
       $("#contactPanel").classList.remove("open");
       $("#contactPanel").setAttribute("aria-hidden", "true");
-      $("#navContact").classList.remove("active");
-      $(`#nav${isGallery ? "Works" : "Home"}`).classList.add("active");
+      setActiveNav(isGallery ? "navWorks" : "navHome");
       if (!isGallery) stage.classList.add("home-mode");
       return;
     }
@@ -380,7 +386,9 @@ function initializeWaterEffect() {
     uniform vec2 u_resolution;
     uniform vec2 u_imageResolution;
     uniform float u_time;
-    uniform vec3 u_ripples[5];
+    uniform float u_intensity;
+    uniform vec3 u_pointer;
+    uniform vec4 u_ripples[8];
 
     vec2 coverUv(vec2 uv) {
       float screenAspect = u_resolution.x / u_resolution.y;
@@ -392,40 +400,99 @@ function initializeWaterEffect() {
         uv.x = (uv.x - 0.5) * (screenAspect / imageAspect) + 0.5;
       }
 
-      return uv;
+      return clamp(uv, 0.001, 0.999);
+    }
+
+    float hashCell(vec2 cell) {
+      return fract(sin(dot(cell, vec2(127.1, 311.7))) * 43758.5453);
+    }
+
+    float valueNoise(vec2 point) {
+      vec2 cell = floor(point);
+      vec2 local = fract(point);
+      vec2 blend = local * local * (3.0 - 2.0 * local);
+      float lower = mix(hashCell(cell), hashCell(cell + vec2(1.0, 0.0)), blend.x);
+      float upper = mix(hashCell(cell + vec2(0.0, 1.0)), hashCell(cell + vec2(1.0)), blend.x);
+      return mix(lower, upper, blend.y);
+    }
+
+    float layeredNoise(vec2 point) {
+      float value = 0.0;
+      float weight = 0.5;
+
+      for (int octave = 0; octave < 4; octave++) {
+        value += valueNoise(point) * weight;
+        point *= 2.03;
+        weight *= 0.5;
+      }
+
+      return value;
+    }
+
+    float waterLight(vec2 uv, float time) {
+      vec2 point = mod(uv * 6.28318, 6.28318) - 250.0;
+      vec2 warped = point;
+      float value = 1.0;
+      const float intensity = 0.005;
+
+      for (int layer = 0; layer < 4; layer++) {
+        float speed = time * (1.0 - 3.5 / float(layer + 1));
+        warped = point + vec2(
+          cos(speed - warped.x) + sin(speed + warped.y),
+          sin(speed - warped.y) + cos(speed + warped.x)
+        );
+        vec2 rays = vec2(
+          point.x / (sin(warped.x + speed) / intensity),
+          point.y / (cos(warped.y + speed) / intensity)
+        );
+        value += 1.0 / max(length(rays), 0.0001);
+      }
+
+      value = 1.17 - pow(value * 0.25, 1.4);
+      return pow(abs(value), 8.0);
     }
 
     void main() {
-      vec2 warped = v_uv;
+      float aspect = u_resolution.x / u_resolution.y;
+      vec2 point = vec2(v_uv.x * aspect, v_uv.y);
+      vec2 flowPoint = point * vec2(2.2, 3.4) + vec2(u_time * 0.06, -u_time * 0.11);
+      float firstNoise = layeredNoise(flowPoint);
+      float secondNoise = layeredNoise(
+        flowPoint * 1.7 + vec2(-u_time * 0.08, u_time * 0.05) + firstNoise
+      );
+      vec2 flow = (vec2(firstNoise, secondNoise) - 0.5) * 0.028 * u_intensity;
+      flow.y += sin(point.x * 9.0 + u_time * 1.2 + firstNoise * 5.0) * 0.0025 * u_intensity;
 
-      for (int i = 0; i < 5; i++) {
-        vec3 ripple = u_ripples[i];
-        float age = u_time - ripple.z;
-        float distanceFromCenter = distance(v_uv, ripple.xy);
-        float active = step(0.0, age) * step(age, 2.4);
-        float ring = sin((distanceFromCenter - age * 0.34) * 58.0)
-          * exp(-distanceFromCenter * 2.2)
-          * exp(-age * 1.5)
-          * active;
-        vec2 direction = normalize(v_uv - ripple.xy + vec2(0.00001));
-        warped += direction * ring * 0.012;
+      vec2 fromPointer = point - vec2(u_pointer.x * aspect, u_pointer.y);
+      float pointerDistance = length(fromPointer) + 0.0001;
+      vec2 ripple = fromPointer / pointerDistance
+        * sin(pointerDistance * 55.0 - u_time * 6.0)
+        * exp(-pointerDistance * 7.0) * 0.008 * u_pointer.z;
+      float rippleLight = 0.0;
+
+      for (int dropIndex = 0; dropIndex < 8; dropIndex++) {
+        vec4 drop = u_ripples[dropIndex];
+
+        if (drop.w > 0.0) {
+          float age = u_time - drop.z;
+          vec2 offset = point - vec2(drop.x * aspect, drop.y);
+          float distanceFromDrop = length(offset) + 0.0001;
+          float waveFront = distanceFromDrop - age * 0.35;
+          float ring = exp(-pow(waveFront * 14.0, 2.0));
+          float wave = sin(waveFront * 70.0) * ring * exp(-age * 1.1) * drop.w;
+          ripple += offset / distanceFromDrop * wave * 0.035;
+          rippleLight += ring * exp(-age * 0.8) * drop.w;
+        }
       }
 
-      vec2 idleDirection = v_uv - vec2(0.77, 0.43);
-      float idleDistance = length(idleDirection);
-      float idleRipple = sin(idleDistance * 62.0 - u_time * 1.35)
-        * exp(-idleDistance * 2.6);
-      warped += normalize(idleDirection + vec2(0.00001)) * idleRipple * 0.0028;
+      vec3 color = texture2D(u_image, coverUv(v_uv + flow + ripple)).rgb;
+      float luminance = dot(color, vec3(0.299, 0.587, 0.114));
+      float highlights = waterLight(point * 2.6 + flow * 18.0, u_time * 0.5);
+      color += vec3(0.62, 0.84, 1.0) * highlights * 0.2
+        * u_intensity * (0.35 + luminance);
+      color += vec3(0.8, 0.93, 1.0) * (length(ripple) * 6.0 + rippleLight * 0.04);
 
-      vec2 ambientWave = vec2(
-        sin(v_uv.y * 11.0 + u_time * 1.1)
-          + sin(v_uv.y * 23.0 - u_time * 0.75),
-        cos(v_uv.x * 10.0 - u_time * 0.9)
-          + sin((v_uv.x - v_uv.y) * 19.0 + u_time * 0.8)
-      );
-      warped += ambientWave * 0.005;
-
-      gl_FragColor = texture2D(u_image, coverUv(warped));
+      gl_FragColor = vec4(color, 1.0);
     }
   `;
 
@@ -514,23 +581,23 @@ function initializeWaterEffect() {
   const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
   const imageResolutionLocation = gl.getUniformLocation(program, "u_imageResolution");
   const timeLocation = gl.getUniformLocation(program, "u_time");
+  const intensityLocation = gl.getUniformLocation(program, "u_intensity");
   const imageLocation = gl.getUniformLocation(program, "u_image");
+  const pointerLocation = gl.getUniformLocation(program, "u_pointer");
   const ripplesLocation = gl.getUniformLocation(program, "u_ripples[0]");
-  const ripples = new Float32Array(15);
+  const maxRipples = 8;
+  const rippleLifetime = 4;
+  const ripples = new Float32Array(maxRipples * 4);
   const startedAt = performance.now();
-  let nextRipple = 0;
-  let previousPointer = null;
+  let waterTime = 0;
+  const pointer = { x: 0.5, y: 0.5, targetX: 0.5, targetY: 0.5, energy: 0 };
+  let activeRipples = [];
 
-  for (let i = 0; i < 5; i++) {
-    ripples[i * 3 + 2] = -1000;
-  }
-
-  const addRipple = (x, y) => {
-    const offset = nextRipple * 3;
-    ripples[offset] = x;
-    ripples[offset + 1] = y;
-    ripples[offset + 2] = (performance.now() - startedAt) / 1000;
-    nextRipple = (nextRipple + 1) % 5;
+  const addRipple = (x, y, strength = 1) => {
+    activeRipples = [
+      ...activeRipples,
+      { x, y, start: waterTime, strength }
+    ].slice(-maxRipples);
   };
 
   const getPointerPosition = event => {
@@ -544,23 +611,23 @@ function initializeWaterEffect() {
   homeCanvas.addEventListener("pointermove", event => {
     const point = getPointerPosition(event);
 
-    if (
-      previousPointer &&
-      Math.hypot(point.x - previousPointer.x, point.y - previousPointer.y) < 0.018
-    ) return;
+    const movement = Math.hypot(
+      point.x - pointer.targetX,
+      point.y - pointer.targetY
+    );
 
-    previousPointer = point;
-    addRipple(point.x, point.y);
+    pointer.targetX = point.x;
+    pointer.targetY = point.y;
+    pointer.energy = Math.min(1, pointer.energy + movement * 8);
+
+    if (movement > 0.06) {
+      addRipple(point.x, point.y, Math.min(0.7, movement * 2));
+    }
   });
 
   homeCanvas.addEventListener("pointerdown", event => {
     const point = getPointerPosition(event);
-    previousPointer = point;
-    addRipple(point.x, point.y);
-  });
-
-  homeCanvas.addEventListener("pointerleave", () => {
-    previousPointer = null;
+    addRipple(point.x, point.y, 1);
   });
 
   homeCanvas.addEventListener("webglcontextlost", event => {
@@ -571,7 +638,7 @@ function initializeWaterEffect() {
 
   const resize = () => {
     const rect = homeBackdrop.getBoundingClientRect();
-    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 1.25);
     homeCanvas.width = Math.max(1, Math.round(rect.width * pixelRatio));
     homeCanvas.height = Math.max(1, Math.round(rect.height * pixelRatio));
     gl.viewport(0, 0, homeCanvas.width, homeCanvas.height);
@@ -582,14 +649,36 @@ function initializeWaterEffect() {
 
   gl.uniform1i(imageLocation, 0);
   gl.uniform2f(imageResolutionLocation, homeArtwork.naturalWidth, homeArtwork.naturalHeight);
-  addRipple(0.72, 0.43);
+  gl.uniform1f(intensityLocation, 1);
+  addRipple(Math.random(), 0.05 + Math.random() * 0.5, 0.45);
+  const rainTimer = window.setInterval(() => {
+    addRipple(Math.random(), 0.05 + Math.random() * 0.5, 0.3 + Math.random() * 0.3);
+  }, 2600);
   let hasRendered = false;
 
   const render = now => {
     if (stage.classList.contains("home-mode")) {
+      waterTime = (now - startedAt) / 1000;
+      pointer.x += (pointer.targetX - pointer.x) * 0.12;
+      pointer.y += (pointer.targetY - pointer.y) * 0.12;
+      pointer.energy *= 0.95;
+
+      activeRipples = activeRipples.filter(
+        ripple => waterTime - ripple.start < rippleLifetime
+      );
+      ripples.fill(0);
+      activeRipples.forEach((ripple, rippleIndex) => {
+        const offset = rippleIndex * 4;
+        ripples[offset] = ripple.x;
+        ripples[offset + 1] = ripple.y;
+        ripples[offset + 2] = ripple.start;
+        ripples[offset + 3] = ripple.strength;
+      });
+
       gl.uniform2f(resolutionLocation, homeCanvas.width, homeCanvas.height);
-      gl.uniform1f(timeLocation, (now - startedAt) / 1000);
-      gl.uniform3fv(ripplesLocation, ripples);
+      gl.uniform1f(timeLocation, waterTime);
+      gl.uniform3f(pointerLocation, pointer.x, pointer.y, pointer.energy);
+      gl.uniform4fv(ripplesLocation, ripples);
       gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
       if (!hasRendered) {
@@ -601,6 +690,7 @@ function initializeWaterEffect() {
     requestAnimationFrame(render);
   };
 
+  window.addEventListener("pagehide", () => window.clearInterval(rainTimer), { once: true });
   requestAnimationFrame(render);
 }
 
@@ -627,6 +717,6 @@ function updateHeader() {
 $("#aboutPanel").addEventListener("scroll", updateHeader, { passive: true });
 $("#galleryView").addEventListener("scroll", updateHeader, { passive: true });
 
-// 패널 열고 닫을 때(클릭·ESC) 상태 다시 확인
+
 document.addEventListener("click", () => requestAnimationFrame(updateHeader));
 document.addEventListener("keydown", () => requestAnimationFrame(updateHeader));

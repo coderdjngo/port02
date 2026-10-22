@@ -8,7 +8,7 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Homemade+Apple&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Italiana&family=Homemade+Apple&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 
 </head>
@@ -19,15 +19,15 @@
 
     <!-- HEADER -->
     <header class="site-header">
-      <a class="brand" href="#home" id="brand">
-        MOON, KYUNG AE
+      <!-- <a class="brand" href="#home" id="brand">
+        MOON KYUNG AE
         <span class="brand-symbol" aria-hidden="true"></span>
-      </a>
+      </a> -->
 
       <nav class="nav" aria-label="주 메뉴">
         <button id="navHome" class="active">Home</button>
         <button id="navWorks">Works</button>
-        <button id="navAbout">About</button>
+        <button id="navAbout">Profile</button>
         <button id="navContact">Contact</button>
       </nav>
     </header>
@@ -40,12 +40,13 @@
         <canvas id="homeCanvas" aria-hidden="true"></canvas>
       </div>
       <div class="home-copy">
-        <p class="home-eyebrow">PAINTER <span>·</span> DAEJEON, KOREA</p>
-        <h1>Moon, Kyung Ae</h1>
-        <p class="home-statement">I hope the colors, textures, and brushstrokes on the canvas can speak the language of emotion.</p>
-        <p class="home-selected">SELECTED WORKS <span>/</span> DAEJEON, KOREA</p>
+        <h1 aria-label="Moon Kyung Ae">
+          <span class="home-title-word" aria-hidden="true"><span>M</span><span>o</span><span>o</span><span>n</span><span></span></span>
+          <span class="home-title-word" aria-hidden="true"><span>K</span><span>y</span><span>u</span><span>n</span><span>g</span></span>
+          <span class="home-title-word" aria-hidden="true"><span>A</span><span>e</span></span>
+        </h1>
+        <p class="home-statement"></p>
       </div>
-      <p class="home-water-hint">MOVE OR CLICK TO DISTURB THE WATER</p>
     </section>
 
     <!-- ALL WORKS -->
@@ -68,7 +69,7 @@
 
     <!-- MAIN BOTTOM -->
     <footer class="stage-bottom" id="mainFooter">
-      <button class="open-gallery" id="openGallery">
+      <button class="open-gallery" id="openGallery" aria-label="갤러리 모아보기">
         갤러리 모아보기
         <span aria-hidden="true">↗</span>
       </button>
@@ -110,15 +111,10 @@
              aria-label="작가 소개와 전시 이력" aria-hidden="true">
       <div class="about-layout">
 
-        <!-- 01. HERO : name + portrait -->
+        <!-- 01. PROFILE -->
         <header class="about-hero">
           <div class="about-hero-copy">
-            <p class="about-eyebrow"><span>01</span>ABOUT THE ARTIST</p>
-            <h2>Moon<br>Kyeong Ae<span>.</span></h2>
-            <p class="about-name-ko">문경애</p>
-            <blockquote class="about-quote">
-              고요하지만 단단하게, 침묵 속에서 더 많은 이야기를 품고 있는 그런 회화를 꿈꾼다.
-            </blockquote>
+            <p class="about-eyebrow"><span>01</span>PROFILE</p>
           </div>
 
           <figure class="about-portrait">
@@ -161,11 +157,11 @@
             </div>
             <div>
               <dt>경력</dt>
-              <dd>前 한국전자통신연구원(ETRI)<br>방송미디어연구소</dd>
+              <dd>前 한국전자통신연구원(ETRI) 방송미디어연구소</dd>
             </div>
             <div>
               <dt>학력</dt>
-              <dd>충남대학교 대학원 졸업</dd>
+              <dd>충남대학교 대학원 박사과정 졸업</dd>
             </div>
           </dl>
         </section>
@@ -243,13 +239,13 @@
         <h2>Contact.</h2>
         <p>작품 문의는 아래 이메일로 보내주세요.</p>
         <a class="contact-email"
-           href="mailto:artist@example.com?subject=Moon%20Kyeong%20Ae%20Portfolio">
-          artist@example.com <span aria-hidden="true">↗</span>
+           href="mailto:heremoon7@gmail.com?subject=%EC%9E%91%ED%92%88%20%EB%AC%B8%EC%9D%98&body=%EC%95%88%EB%85%95%ED%95%98%EC%84%B8%EC%9A%94%2C%20%EB%AC%B8%EA%B2%BD%EC%95%A0%20%EC%9E%91%EA%B0%80%EB%8B%98.%0A%0A%EC%9E%91%ED%92%88%20%EB%AC%B8%EC%9D%98%EB%93%9C%EB%A6%BD%EB%8B%88%EB%8B%A4.%0A%0A">
+          heremoon7@gmail.com <span aria-hidden="true">↗</span>
         </a>
         <div class="contact-social">
           <span>INSTAGRAM</span>
-          <a href="https://www.instagram.com/gomtiiing/"
-             target="_blank" rel="noopener noreferrer">@gomtiiing ↗</a>
+          <a href="https://www.instagram.com/gomtiiiing/"
+             target="_blank" rel="noopener noreferrer">@gomtiiiing ↗</a>
         </div>
         <button id="contactBack">← Back</button>
       </article>

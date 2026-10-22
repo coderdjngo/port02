@@ -135,6 +135,8 @@ img { display: block; }
   display: flex;
   align-items: center;
   gap: clamp(14px, 2.3vw, 37px);
+  width:100%;
+  justify-content: flex-end;
 }
 
 .nav button {
@@ -224,18 +226,6 @@ img { display: block; }
 .home-backdrop.webgl-ready img { opacity: 0; }
 .home-backdrop.webgl-ready canvas { opacity: 1; pointer-events: auto; }
 
-.home-water-hint {
-  position: absolute;
-  z-index: 6;
-  right: clamp(20px, 4vw, 60px);
-  bottom: 82px;
-  margin: 0;
-  color: rgba(255, 255, 255, .7);
-  font-size: .625rem;
-  letter-spacing: .14em;
-  pointer-events: none;
-}
-
 .main-view::after {
   content: "";
   position: absolute;
@@ -252,44 +242,52 @@ img { display: block; }
   position: absolute;
   z-index: 5;
   left: clamp(24px, 8vw, 132px);
-  bottom: 25%;
+  bottom: 22%;
   width: min(84vw, 1080px);
   color: #fff;
   pointer-events: none;
 }
 
-.home-eyebrow,
-.home-selected {
-  margin: 0;
-  font-size: .75rem;
-  font-weight: 500;
-  letter-spacing: .16em;
-}
-
-.home-eyebrow span,
-.home-selected span { color: rgba(255, 255, 255, .58); }
-
 .home-copy h1 {
-  margin: 18px 0 10px -.08em;
-  font-family: "Cormorant Garamond", Georgia, serif;
-  font-size: 7rem;
+  margin: 0 0 10px -.08em;
+  font-family: "Italiana", Georgia, serif;
+  font-size: clamp(3rem, 13.3vw, 10.65rem);
   font-weight: 400;
   line-height: .9;
   letter-spacing: -.055em;
+  white-space: nowrap;
+}
+
+.home-title-word {
+  display: inline-flex;
+  margin-right: .2em;
+}
+
+.home-title-word span {
+  display: inline-block;
+  animation: titleFloat 3.4s ease-in-out infinite;
+  animation-delay: calc(var(--letter-index, 0) * -0.17s);
+}
+
+.home-title-word span:nth-child(1) { --letter-index: 0; }
+.home-title-word span:nth-child(2) { --letter-index: 1; }
+.home-title-word span:nth-child(3) { --letter-index: 2; }
+.home-title-word span:nth-child(4) { --letter-index: 3; }
+.home-title-word span:nth-child(5) { --letter-index: 4; }
+
+@keyframes titleFloat {
+  0%, 100% { transform: translate3d(0, 0, 0) rotate(0); }
+  35% { transform: translate3d(0, -.055em, 0) rotate(-.6deg); }
+  68% { transform: translate3d(0, .035em, 0) rotate(.4deg); }
 }
 
 .home-statement {
-  max-width: min(38rem, 82vw);
+  max-width: min(26rem, 82vw);
+  min-height: 3rem;
   margin: 20px 0 25px;
-  font-size: 1rem;
-  line-height: 1.7;
+  font-size: .833333rem;
+  line-height: 1.8;
   letter-spacing: .01em;
-}
-
-.home-selected {
-  color: rgba(255, 255, 255, .72);
-  font-size: .625rem;
-  letter-spacing: .18em;
 }
 
 /* ====================================
@@ -320,6 +318,11 @@ img { display: block; }
 }
 
 .stage.home-mode .open-gallery { color: #fff; }
+
+.stage.home-mode .caption-center,
+.stage.home-mode .caption-right {
+  display: none;
+}
 
 .open-gallery {
   display: flex;
@@ -649,7 +652,7 @@ img { display: block; }
 .about-hero {
   display: grid;
   grid-template-columns: minmax(0, .82fr) minmax(0, 1.18fr);
-  align-items: end;
+  align-items: start;
   gap: clamp(36px, 6vw, 90px);
 }
 
@@ -663,25 +666,6 @@ img { display: block; }
 }
 
 .about-hero h2 span { color: #bbb; }
-
-.about-name-ko {
-  margin: 0 0 clamp(28px, 4vw, 48px);
-  color: #777;
-  font-size: .875rem;
-  letter-spacing: .04em;
-}
-
-.about-quote {
-  position: relative;
-  margin: 0;
-  padding-left: 22px;
-  border-left: 1px solid #171717;
-  font-family: "MaruBuri", "Noto Sans KR", serif;
-  font-size: clamp(1.0625rem, 1.5vw, 1.3125rem);
-  line-height: 1.85;
-  color: #333;
-  word-break: keep-all;
-}
 
 .about-portrait { margin: 0; }
 
@@ -787,20 +771,17 @@ img { display: block; }
 }
 
 .artist-profile {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  display: block;
   margin: 0;
   border-top: 1px solid #171717;
 }
 
 .artist-profile div {
-  padding: 18px 18px 18px 0;
+  display: grid;
+  grid-template-columns: minmax(7rem, .35fr) 1fr;
+  gap: 18px;
+  padding: 18px 0;
   border-bottom: 1px solid #ddd;
-}
-
-.artist-profile div + div {
-  padding-left: 18px;
-  border-left: 1px solid #e5e5e5;
 }
 
 .artist-profile dt,
@@ -812,7 +793,6 @@ img { display: block; }
 }
 
 .artist-profile dt {
-  margin-bottom: 10px;
   color: #888;
   font-size: .75rem;
   letter-spacing: .08em;
@@ -919,66 +899,42 @@ img { display: block; }
 }
 
 
-/* ---------- Deep zone : white → sea blue → black, like the paintings ---------- */
+/* ---------- Profile and exhibition history ---------- */
 .about-deep {
-  --fade: clamp(220px, 34vh, 360px);
   display: flex;
   flex-direction: column;
   gap: clamp(64px, 9vw, 120px);
-  /* full-bleed background, content stays on the layout grid */
-  margin: 0 calc(50% - 50vw);
-  padding: var(--fade) calc(50vw - 50%) clamp(56px, 8vw, 96px);
-  color: #e4ebed;
-  background: linear-gradient(
-    to bottom,
-    #fff 0,
-    #e6eef0 calc(var(--fade) * .28),
-    #8aa6ae calc(var(--fade) * .58),
-    #33596a calc(var(--fade) * .86),
-    #1f3a47 calc(var(--fade) + 160px),
-    #142630 calc(var(--fade) + 700px),
-    #0c1317 75%,
-    #08090a 100%
-  );
+  margin: 0;
+  padding: 0 0 clamp(56px, 8vw, 96px);
+  color: #171717;
+  background: #fff;
 }
 
 .about-deep .about-block::before {
-  opacity: .35;
-  background: repeating-linear-gradient(
-    to right,
-    #cfdde2 0,
-    #cfdde2 1px,
-    transparent 1px,
-    transparent 6px
-  );
+  opacity: .5;
+  background: repeating-linear-gradient(to right, #4e4e4e 0, #4e4e4e 1px, transparent 1px, transparent 6px);
 }
 
-.about-deep .about-eyebrow { color: #93abb3; }
-.about-deep .about-eyebrow span { color: #fff; }
-.about-deep .about-eyebrow span::after { background: #5d7983; }
-
-.about-deep .artist-profile { border-top-color: rgba(255,255,255,.75); }
-.about-deep .artist-profile div { border-bottom-color: rgba(255,255,255,.14); }
-.about-deep .artist-profile div + div { border-left-color: rgba(255,255,255,.1); }
-.about-deep .artist-profile dt { color: #93abb3; }
-
-.about-deep .exhibitions-heading { border-bottom-color: rgba(255,255,255,.75); }
-.about-deep .exhibitions-heading h3 span { color: #6f9aa9; }
+.about-deep .about-eyebrow { color: #777; }
+.about-deep .about-eyebrow span { color: #111; }
+.about-deep .about-eyebrow span::after { background: #bbb; }
+.about-deep .artist-profile { border-top-color: #171717; }
+.about-deep .artist-profile div { border-bottom-color: #ddd; }
+.about-deep .artist-profile dt { color: #888; }
+.about-deep .exhibitions-heading { border-bottom-color: #171717; }
+.about-deep .exhibitions-heading h3 span { color: #aaa; }
 .about-deep .exhibitions-heading p,
 .about-deep .exhibition-list time,
 .about-deep .exhibition-year,
-.about-deep .exhibition-list li div span { color: #8ea3ab; }
-
-.about-deep .exhibition-list li { border-top-color: rgba(255,255,255,.1); }
-.about-deep .exhibition-list li:hover { background: rgba(255,255,255,.04); }
-
+.about-deep .exhibition-list li div span { color: #888; }
+.about-deep .exhibition-list li { border-top-color: #e5e5e5; }
+.about-deep .exhibition-list li:hover { background: #fafafa; }
 .about-deep .exhibition-award {
-  border-top-color: rgba(255,255,255,.75);
-  border-bottom-color: rgba(255,255,255,.14);
+  border-top-color: #171717;
+  border-bottom-color: #ddd;
 }
-.about-deep .exhibition-award p { color: #b9c8cd; }
-
-.about-deep > button { color: #e4ebed; }
+.about-deep .exhibition-award p { color: #555; }
+.about-deep > button { color: #171717; }
 
 /* ---------- Entrance ---------- */
 @keyframes aboutRise {
@@ -1065,8 +1021,6 @@ img { display: block; }
 @media (max-width: 850px) {
   html { font-size: 16px; }
 
-  .home-copy h1 { font-size: 5rem; }
-
   .gallery-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1089,19 +1043,13 @@ img { display: block; }
 
   .home-copy {
     left: 20px;
-    bottom: 28%;
+    bottom: 25%;
     width: calc(100% - 40px);
   }
 
-  .home-eyebrow { font-size: .625rem; }
-  .home-copy h1 { margin-top: 16px; font-size: 3.375rem; }
-  .home-statement { max-width: 24rem; font-size: .9375rem; }
-  .home-selected { font-size: .5625rem; }
-  .home-water-hint {
-    right: 14px;
-    bottom: 78px;
-    font-size: .5rem;
-  }
+  .home-copy h1 { font-size: clamp(2.25rem, 10.1vw, 3.375rem); }
+  .home-title-word { margin-right: .12em; }
+  .home-statement { max-width: 24rem; font-size: .833333rem; }
 
   .site-header {
     height: 68px;
@@ -1174,20 +1122,14 @@ img { display: block; }
   .about-portrait-frame { aspect-ratio: 4 / 3.4; }
   .about-portrait-frame::after { inset: -8px; }
   .about-portrait figcaption { margin-top: 16px; }
-  .about-quote { padding-left: 16px; }
   .artist-statement p { font-size: 1rem; line-height: 1.95; }
   .artist-statement .statement-key { margin: 1.6rem 0; font-size: 1.1875rem; }
 
-  .artist-profile { grid-template-columns: minmax(0, 1fr); }
-  .artist-profile div,
-  .artist-profile div + div {
-    display: grid;
-    grid-template-columns: 3.5rem 1fr;
+  .artist-profile div {
+    grid-template-columns: 4.5rem 1fr;
     gap: 12px;
     padding: 14px 0;
-    border-left: 0;
   }
-  .artist-profile dt { margin: 0; }
 
   .exhibitions-heading h3 { font-size: 1.75rem; }
   .exhibition-list li { grid-template-columns: 3.25rem 1fr; }
