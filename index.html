@@ -8,19 +8,19 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Homemade+Apple&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Homemade+Apple&family=Noto+Sans+KR:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="styles.css">
 
 </head>
 
 <body>
 <div class="shell">
-  <main class="stage" id="stage">
+  <main class="stage home-mode" id="stage">
 
     <!-- HEADER -->
     <header class="site-header">
       <a class="brand" href="#home" id="brand">
-        MOON KYEONG AE
+        MOON, KYUNG AE
         <span class="brand-symbol" aria-hidden="true"></span>
       </a>
 
@@ -32,15 +32,20 @@
       </nav>
     </header>
 
-    <!-- MAIN FILM VIEW -->
+    <!-- STATIC HOME HERO -->
     <section class="main-view" id="mainView"
-             aria-label="작품 슬라이드">
-      <div class="guide"></div>
-      <div class="wave" id="wave" aria-hidden="true"></div>
-      <div class="reticle" aria-hidden="true"></div>
-      <div class="film" id="film"></div>
-      <span class="counter" id="sideCounter">09 / 12</span>
-      <span class="scroll-hint">SCROLL TO EXPLORE</span>
+             aria-label="작가 소개와 대표 작품">
+      <div class="home-backdrop" aria-hidden="true">
+        <img id="homeArtwork" src="img/sea-01.png" alt="">
+        <canvas id="homeCanvas" aria-hidden="true"></canvas>
+      </div>
+      <div class="home-copy">
+        <p class="home-eyebrow">PAINTER <span>·</span> DAEJEON, KOREA</p>
+        <h1>Moon, Kyung Ae</h1>
+        <p class="home-statement">I hope the colors, textures, and brushstrokes on the canvas can speak the language of emotion.</p>
+        <p class="home-selected">SELECTED WORKS <span>/</span> DAEJEON, KOREA</p>
+      </div>
+      <p class="home-water-hint">MOVE OR CLICK TO DISTURB THE WATER</p>
     </section>
 
     <!-- ALL WORKS -->

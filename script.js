@@ -39,56 +39,21 @@ const works = Array.from({ length: 14 }, (_, i) => {
 ========================================== */
 const $ = selector => document.querySelector(selector);
 
-const clamp = (value, min, max) =>
-  Math.max(min, Math.min(max, value));
-
-const film = $("#film");
 const grid = $("#galleryGrid");
 const gallery = $("#galleryView");
 const footer = $("#mainFooter");
+const stage = $("#stage");
+const homeArtwork = $("#homeArtwork");
+const homeBackdrop = $(".home-backdrop");
+const homeCanvas = $("#homeCanvas");
 
-let index = 8;
 let isGallery = false;
 let transitioning = false;
-let lastWheel = 0;
-
-const tween = (element, params) => {
-  if (window.gsap) {
-    gsap.to(element, params);
-  } else {
-    Object.assign(element.style, params);
-  }
-};
 
 /* ==========================================
-   03. CREATE FILM & GALLERY ITEMS
+   03. CREATE GALLERY ITEMS
 ========================================== */
 works.forEach((work, i) => {
-  const filmButton = document.createElement("button");
-
-  filmButton.className = "film-item";
-  filmButton.dataset.index = i;
-  filmButton.setAttribute(
-    "aria-label",
-    work.title + " 작품 보기"
-  );
-
-  const filmImage = document.createElement("img");
-  filmImage.src = work.image;
-  filmImage.alt = work.title;
-  filmImage.draggable = false;
-  filmButton.appendChild(filmImage);
-
-  filmButton.addEventListener("click", () => {
-    if (i === index) {
-      openDetail(i);
-    } else {
-      select(i);
-    }
-  });
-
-  film.appendChild(filmButton);
-
   const card = document.createElement("button");
   card.className = "gallery-card";
   card.dataset.index = i;
@@ -124,106 +89,22 @@ works.forEach((work, i) => {
 $("#galleryCount").textContent =
   String(works.length).padStart(2, "0") + " WORKS";
 
-const slots = [...film.children];
-
-/* ==========================================
-   04. SELECT WORK
-   스크롤 시 중앙 작품 변경
-========================================== */
-function select(next, instant = false) {
-  index = (next + works.length) % works.length;
-
-  const mobile = innerWidth <= 580;
-
-  const bigW = clamp(
-    innerWidth * (mobile ? .63 : .27),
-    mobile ? 175 : 220,
-    mobile ? 260 : 380
-  );
-
-  const bigH = clamp(
-    innerHeight * (mobile ? .27 : .28),
-    mobile ? 150 : 170,
-    mobile ? 210 : 290
-  );
-
-  const smallW = mobile
-    ? 92
-    : clamp(innerWidth * .105, 90, 132);
-
-  const smallH = mobile
-    ? 94
-    : clamp(innerHeight * .17, 94, 132);
-
-  slots.forEach((element, i) => {
-    let distanceIndex = i - index;
-
-    if (distanceIndex > works.length / 2) {
-      distanceIndex -= works.length;
-    }
-
-    if (distanceIndex < -works.length / 2) {
-      distanceIndex += works.length;
-    }
-
-    const active = distanceIndex === 0;
-    const distance = Math.abs(distanceIndex);
-
-    const h = active ? bigH : smallH;
-    const w = active ? bigW : smallW;
-
-    const y = distanceIndex === 0
-      ? 0
-      : Math.sign(distanceIndex) * (
-          bigH / 2 +
-          smallH / 2 +
-          8 +
-          (distance - 1) * (smallH + 9)
-        );
-
-    element.style.pointerEvents =
-      distance > 3 ? "none" : "auto";
-
-    element.setAttribute(
-      "aria-current",
-      String(active)
-    );
-
-    tween(element, {
-      width: w,
-      height: h,
-      x: -w / 2,
-      y: y - h / 2,
-      opacity: distance > 3 ? 0 : 1,
-      zIndex: active ? 5 : distance === 1 ? 3 : 2,
-      duration: instant ? 0 : .68,
-      ease: "power3.inOut",
-      overwrite: true
-    });
-  });
-
-  const work = works[index];
-
-  $("#workName").textContent = work.title;
-  $("#workType").textContent = work.subtitle;
-  $("#workPlace").textContent = work.place;
-  $("#workYear").textContent = work.year;
-
-  $("#sideCounter").textContent =
-    String(index + 1).padStart(2, "0") +
-    " / " +
-    String(works.length).padStart(2, "0");
-}
+const featuredWork = works[0];
+$("#workName").textContent = featuredWork.title;
+$("#workType").textContent = featuredWork.subtitle;
+$("#workPlace").textContent = featuredWork.place;
+$("#workYear").textContent = featuredWork.year;
 
 /* ==========================================
    05. OPEN ALL GALLERY
-   중앙 이미지 → 전체 갤러리 전환
+   메인 작품에서 전체 갤러리로 전환
 ========================================== */
 function openGallery() {
   if (isGallery || transitioning) return;
 
   transitioning = true;
   isGallery = true;
+  stage.classList.remove("home-mode");
 
   gallery.style.visibility = "visible";
   gallery.setAttribute("aria-hidden", "false");
@@ -238,7 +119,7 @@ function openGallery() {
       y: 20
     });
 
-    gsap.set(cards, { opacity: 0 });
+    gsap.set(cards, { opacity: 0, y: 18 });
 
     const timeline = gsap.timeline({
       onComplete: () => {
@@ -252,45 +133,13 @@ function openGallery() {
       }
     });
 
-    cards.forEach((card, i) => {
-      const destination = card
-        .querySelector(".gallery-img")
-        .getBoundingClientRect();
-
-      const source = slots[i].getBoundingClientRect();
-
-      const startX =
-        source.left +
-        source.width / 2 -
-        (destination.left + destination.width / 2);
-
-      const startY =
-        source.top +
-        source.height / 2 -
-        (destination.top + destination.height / 2);
-
-      const scale = clamp(
-        source.width / destination.width,
-        .35,
-        1.6
-      );
-
-      gsap.set(card, {
-        x: startX,
-        y: startY,
-        scale: scale,
-        opacity: 0
-      });
-
-      timeline.to(card, {
-        x: 0,
-        y: 0,
-        scale: 1,
-        opacity: 1,
-        duration: .85,
-        ease: "power3.inOut"
-      }, i * .035);
-    });
+    timeline.to(cards, {
+      opacity: 1,
+      y: 0,
+      duration: .55,
+      ease: "power3.out",
+      stagger: .035
+    }, 0);
 
     timeline.to($(".gallery-head"), {
       opacity: 1,
@@ -303,7 +152,7 @@ function openGallery() {
       duration: .25
     }, 0);
 
-    timeline.to(film, {
+    timeline.to(homeBackdrop, {
       opacity: 0,
       duration: .35
     }, 0);
@@ -311,7 +160,7 @@ function openGallery() {
   } else {
     gallery.style.opacity = "1";
     footer.style.opacity = "0";
-    film.style.opacity = "0";
+    homeBackdrop.style.opacity = "0";
     transitioning = false;
   }
 
@@ -332,7 +181,7 @@ function closeGallery() {
     gallery.style.visibility = "hidden";
     gallery.setAttribute("aria-hidden", "true");
     transitioning = false;
-    select(index, true);
+    stage.classList.add("home-mode");
     $("#openGallery").focus();
   };
 
@@ -342,7 +191,7 @@ function closeGallery() {
         opacity: 0,
         duration: .4
       })
-      .to(film, {
+      .to(homeBackdrop, {
         opacity: 1,
         duration: .3
       }, 0)
@@ -352,7 +201,7 @@ function closeGallery() {
       }, 0);
   } else {
     gallery.style.opacity = 0;
-    film.style.opacity = 1;
+    homeBackdrop.style.opacity = 1;
     footer.style.opacity = 1;
     finish();
   }
@@ -397,6 +246,7 @@ $("#galleryClose").addEventListener("click", closeGallery);
 $("#detailClose").addEventListener("click", closeDetail);
 
 $("#navWorks").addEventListener("click", () => {
+  stage.classList.remove("home-mode");
   $("#aboutPanel").classList.remove("open");
   $("#aboutPanel").setAttribute("aria-hidden", "true");
   $("#contactPanel").classList.remove("open");
@@ -406,6 +256,7 @@ $("#navWorks").addEventListener("click", () => {
 });
 
 $("#navHome").addEventListener("click", () => {
+  if (!isGallery) stage.classList.add("home-mode");
   $("#aboutPanel").classList.remove("open");
   $("#aboutPanel").setAttribute("aria-hidden", "true");
   $("#contactPanel").classList.remove("open");
@@ -422,6 +273,7 @@ $("#brand").addEventListener("click", e => {
 });
 
 $("#navAbout").addEventListener("click", () => {
+  stage.classList.remove("home-mode");
   $("#contactPanel").classList.remove("open");
   $("#contactPanel").setAttribute("aria-hidden", "true");
   $("#navContact").classList.remove("active");
@@ -432,9 +284,11 @@ $("#navAbout").addEventListener("click", () => {
 $("#aboutBack").addEventListener("click", () => {
   $("#aboutPanel").classList.remove("open");
   $("#aboutPanel").setAttribute("aria-hidden", "true");
+  if (!isGallery) stage.classList.add("home-mode");
 });
 
 $("#navContact").addEventListener("click", () => {
+  stage.classList.remove("home-mode");
   $("#aboutPanel").classList.remove("open");
   $("#aboutPanel").setAttribute("aria-hidden", "true");
   $("#contactPanel").classList.add("open");
@@ -449,59 +303,11 @@ $("#contactBack").addEventListener("click", () => {
   $("#contactPanel").setAttribute("aria-hidden", "true");
   $("#navContact").classList.remove("active");
   $(`#nav${isGallery ? "Works" : "Home"}`).classList.add("active");
+  if (!isGallery) stage.classList.add("home-mode");
 });
 
 /* ==========================================
-   09. MOUSE WHEEL
-========================================== */
-$("#stage").addEventListener("wheel", e => {
-  if (
-    isGallery ||
-    transitioning ||
-    $("#detail").classList.contains("open") ||
-    $("#aboutPanel").classList.contains("open") ||
-    $("#contactPanel").classList.contains("open")
-  ) return;
-
-  e.preventDefault();
-
-  const now = performance.now();
-
-  if (Math.abs(e.deltaY) < 4 || now - lastWheel < 570) {
-    return;
-  }
-
-  lastWheel = now;
-
-  select(index + (e.deltaY > 0 ? 1 : -1));
-}, { passive: false });
-
-/* ==========================================
-   10. MOBILE TOUCH SWIPE
-========================================== */
-let touchY = 0;
-
-$("#stage").addEventListener("touchstart", e => {
-  touchY = e.touches[0].clientY;
-}, { passive: true });
-
-$("#stage").addEventListener("touchend", e => {
-  if (
-    isGallery ||
-    $("#detail").classList.contains("open") ||
-    $("#aboutPanel").classList.contains("open") ||
-    $("#contactPanel").classList.contains("open")
-  ) return;
-
-  const diff = touchY - e.changedTouches[0].clientY;
-
-  if (Math.abs(diff) > 35) {
-    select(index + (diff > 0 ? 1 : -1));
-  }
-}, { passive: true });
-
-/* ==========================================
-   11. KEYBOARD
+   09. KEYBOARD
 ========================================== */
 document.addEventListener("keydown", e => {
   if (e.key === "Escape") {
@@ -513,6 +319,7 @@ document.addEventListener("keydown", e => {
     if ($("#aboutPanel").classList.contains("open")) {
       $("#aboutPanel").classList.remove("open");
       $("#aboutPanel").setAttribute("aria-hidden", "true");
+      if (!isGallery) stage.classList.add("home-mode");
       return;
     }
 
@@ -521,68 +328,283 @@ document.addEventListener("keydown", e => {
       $("#contactPanel").setAttribute("aria-hidden", "true");
       $("#navContact").classList.remove("active");
       $(`#nav${isGallery ? "Works" : "Home"}`).classList.add("active");
+      if (!isGallery) stage.classList.add("home-mode");
       return;
     }
 
     if (isGallery) closeGallery();
+  }
+});
+
+/* ==========================================
+   10. WEBGL WATER
+========================================== */
+function initializeWaterEffect() {
+  if (!homeArtwork.complete) {
+    homeArtwork.addEventListener("load", initializeWaterEffect, { once: true });
+    homeArtwork.addEventListener("error", () => {
+      console.error("The homepage artwork could not be loaded.");
+    }, { once: true });
     return;
   }
 
-  if (
-    isGallery ||
-    transitioning ||
-    $("#detail").classList.contains("open") ||
-    $("#aboutPanel").classList.contains("open") ||
-    $("#contactPanel").classList.contains("open")
-  ) return;
-
-  if (["ArrowDown", "ArrowRight"].includes(e.key)) {
-    e.preventDefault();
-    select(index + 1);
+  if (!homeArtwork.naturalWidth) {
+    console.error("The homepage artwork could not be loaded.");
+    return;
   }
 
-  if (["ArrowUp", "ArrowLeft"].includes(e.key)) {
-    e.preventDefault();
-    select(index - 1);
+  const gl = homeCanvas.getContext("webgl", {
+    alpha: false,
+    antialias: false
+  });
+
+  if (!gl) {
+    console.error("WebGL is unavailable; the original artwork remains visible.");
+    return;
   }
-});
 
-/* ==========================================
-   12. CENTER WAVE
-========================================== */
-const wave = $("#wave");
+  const vertexSource = `
+    attribute vec2 a_position;
+    varying vec2 v_uv;
 
-for (let i = 0; i < 72; i++) {
-  const span = document.createElement("span");
+    void main() {
+      v_uv = a_position * 0.5 + 0.5;
+      gl_Position = vec4(a_position, 0.0, 1.0);
+    }
+  `;
 
-  const a = Math.exp(-Math.pow((i - 27) / 8, 2));
+  const fragmentSource = `
+    precision mediump float;
+    varying vec2 v_uv;
+    uniform sampler2D u_image;
+    uniform vec2 u_resolution;
+    uniform vec2 u_imageResolution;
+    uniform float u_time;
+    uniform vec3 u_ripples[5];
 
-  const height =
-    3 +
-    Math.abs(
-      Math.sin(i * 1.81) * Math.cos(i * .44)
-    ) * a * 38;
+    vec2 coverUv(vec2 uv) {
+      float screenAspect = u_resolution.x / u_resolution.y;
+      float imageAspect = u_imageResolution.x / u_imageResolution.y;
 
-  span.style.setProperty(
-    "--h",
-    height.toFixed(1) + "px"
+      if (screenAspect > imageAspect) {
+        uv.y = (uv.y - 0.5) * (imageAspect / screenAspect) + 0.5;
+      } else {
+        uv.x = (uv.x - 0.5) * (screenAspect / imageAspect) + 0.5;
+      }
+
+      return uv;
+    }
+
+    void main() {
+      vec2 warped = v_uv;
+
+      for (int i = 0; i < 5; i++) {
+        vec3 ripple = u_ripples[i];
+        float age = u_time - ripple.z;
+        float distanceFromCenter = distance(v_uv, ripple.xy);
+        float active = step(0.0, age) * step(age, 2.4);
+        float ring = sin((distanceFromCenter - age * 0.34) * 58.0)
+          * exp(-distanceFromCenter * 2.2)
+          * exp(-age * 1.5)
+          * active;
+        vec2 direction = normalize(v_uv - ripple.xy + vec2(0.00001));
+        warped += direction * ring * 0.012;
+      }
+
+      vec2 idleDirection = v_uv - vec2(0.77, 0.43);
+      float idleDistance = length(idleDirection);
+      float idleRipple = sin(idleDistance * 62.0 - u_time * 1.35)
+        * exp(-idleDistance * 2.6);
+      warped += normalize(idleDirection + vec2(0.00001)) * idleRipple * 0.0028;
+
+      vec2 ambientWave = vec2(
+        sin(v_uv.y * 11.0 + u_time * 1.1)
+          + sin(v_uv.y * 23.0 - u_time * 0.75),
+        cos(v_uv.x * 10.0 - u_time * 0.9)
+          + sin((v_uv.x - v_uv.y) * 19.0 + u_time * 0.8)
+      );
+      warped += ambientWave * 0.005;
+
+      gl_FragColor = texture2D(u_image, coverUv(warped));
+    }
+  `;
+
+  const createShader = (type, source) => {
+    const shader = gl.createShader(type);
+    if (!shader) {
+      console.error("WebGL could not create a homepage shader.");
+      return null;
+    }
+
+    gl.shaderSource(shader, source);
+    gl.compileShader(shader);
+
+    if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+      console.error("Homepage water shader compilation failed:", gl.getShaderInfoLog(shader));
+      gl.deleteShader(shader);
+      return null;
+    }
+
+    return shader;
+  };
+
+  const vertexShader = createShader(gl.VERTEX_SHADER, vertexSource);
+  const fragmentShader = createShader(gl.FRAGMENT_SHADER, fragmentSource);
+
+  if (!vertexShader || !fragmentShader) return;
+
+  const program = gl.createProgram();
+  if (!program) {
+    console.error("WebGL could not create a homepage rendering program.");
+    return;
+  }
+
+  gl.attachShader(program, vertexShader);
+  gl.attachShader(program, fragmentShader);
+  gl.linkProgram(program);
+
+  if (!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+    console.error("Homepage water program linking failed:", gl.getProgramInfoLog(program));
+    gl.deleteProgram(program);
+    return;
+  }
+
+  const positionBuffer = gl.createBuffer();
+  const texture = gl.createTexture();
+
+  if (!positionBuffer || !texture) {
+    console.error("WebGL could not allocate homepage image resources.");
+    return;
+  }
+
+  gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
+  gl.bufferData(
+    gl.ARRAY_BUFFER,
+    new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]),
+    gl.STATIC_DRAW
   );
 
-  wave.appendChild(span);
+  gl.useProgram(program);
+  const positionLocation = gl.getAttribLocation(program, "a_position");
+  gl.enableVertexAttribArray(positionLocation);
+  gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+  gl.activeTexture(gl.TEXTURE0);
+  gl.bindTexture(gl.TEXTURE_2D, texture);
+  gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+  gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+
+  try {
+    gl.texImage2D(
+      gl.TEXTURE_2D,
+      0,
+      gl.RGBA,
+      gl.RGBA,
+      gl.UNSIGNED_BYTE,
+      homeArtwork
+    );
+  } catch (error) {
+    console.error("WebGL could not upload the homepage artwork.", error);
+    return;
+  }
+
+  const resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+  const imageResolutionLocation = gl.getUniformLocation(program, "u_imageResolution");
+  const timeLocation = gl.getUniformLocation(program, "u_time");
+  const imageLocation = gl.getUniformLocation(program, "u_image");
+  const ripplesLocation = gl.getUniformLocation(program, "u_ripples[0]");
+  const ripples = new Float32Array(15);
+  const startedAt = performance.now();
+  let nextRipple = 0;
+  let previousPointer = null;
+
+  for (let i = 0; i < 5; i++) {
+    ripples[i * 3 + 2] = -1000;
+  }
+
+  const addRipple = (x, y) => {
+    const offset = nextRipple * 3;
+    ripples[offset] = x;
+    ripples[offset + 1] = y;
+    ripples[offset + 2] = (performance.now() - startedAt) / 1000;
+    nextRipple = (nextRipple + 1) % 5;
+  };
+
+  const getPointerPosition = event => {
+    const rect = homeCanvas.getBoundingClientRect();
+    return {
+      x: (event.clientX - rect.left) / rect.width,
+      y: 1 - (event.clientY - rect.top) / rect.height
+    };
+  };
+
+  homeCanvas.addEventListener("pointermove", event => {
+    const point = getPointerPosition(event);
+
+    if (
+      previousPointer &&
+      Math.hypot(point.x - previousPointer.x, point.y - previousPointer.y) < 0.018
+    ) return;
+
+    previousPointer = point;
+    addRipple(point.x, point.y);
+  });
+
+  homeCanvas.addEventListener("pointerdown", event => {
+    const point = getPointerPosition(event);
+    previousPointer = point;
+    addRipple(point.x, point.y);
+  });
+
+  homeCanvas.addEventListener("pointerleave", () => {
+    previousPointer = null;
+  });
+
+  homeCanvas.addEventListener("webglcontextlost", event => {
+    event.preventDefault();
+    homeBackdrop.classList.remove("webgl-ready");
+    console.error("The homepage WebGL context was lost; showing the original artwork.");
+  });
+
+  const resize = () => {
+    const rect = homeBackdrop.getBoundingClientRect();
+    const pixelRatio = Math.min(window.devicePixelRatio || 1, 2);
+    homeCanvas.width = Math.max(1, Math.round(rect.width * pixelRatio));
+    homeCanvas.height = Math.max(1, Math.round(rect.height * pixelRatio));
+    gl.viewport(0, 0, homeCanvas.width, homeCanvas.height);
+  };
+
+  window.addEventListener("resize", resize);
+  resize();
+
+  gl.uniform1i(imageLocation, 0);
+  gl.uniform2f(imageResolutionLocation, homeArtwork.naturalWidth, homeArtwork.naturalHeight);
+  addRipple(0.72, 0.43);
+  let hasRendered = false;
+
+  const render = now => {
+    if (stage.classList.contains("home-mode")) {
+      gl.uniform2f(resolutionLocation, homeCanvas.width, homeCanvas.height);
+      gl.uniform1f(timeLocation, (now - startedAt) / 1000);
+      gl.uniform3fv(ripplesLocation, ripples);
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+      if (!hasRendered) {
+        homeBackdrop.classList.add("webgl-ready");
+        hasRendered = true;
+      }
+    }
+
+    requestAnimationFrame(render);
+  };
+
+  requestAnimationFrame(render);
 }
 
-/* ==========================================
-   13. RESIZE
-========================================== */
-let resizeTimer;
-
-window.addEventListener("resize", () => {
-  clearTimeout(resizeTimer);
-
-  resizeTimer = setTimeout(() => {
-    select(index, true);
-  }, 100);
-});
+initializeWaterEffect();
 
 /* ==========================================
    14. HEADER ON SCROLL
@@ -608,8 +630,3 @@ $("#galleryView").addEventListener("scroll", updateHeader, { passive: true });
 // 패널 열고 닫을 때(클릭·ESC) 상태 다시 확인
 document.addEventListener("click", () => requestAnimationFrame(updateHeader));
 document.addEventListener("keydown", () => requestAnimationFrame(updateHeader));
-
-/* ==========================================
-   15. INITIALIZE
-========================================== */
-select(index, true);
